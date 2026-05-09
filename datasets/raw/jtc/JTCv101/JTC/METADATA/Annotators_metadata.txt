@@ -1,0 +1,30 @@
+Annotator	Annotator_layer_ID	Sex	Age_range	Musicianship	Familiarity_with_the_jazz_repertoire	Auditive_problems	Perfect_pitch
+main 1	1	M	31-35	3	mid	no	no
+main 2	2	F	26-30	4	low	no	no
+others1	3	F	26-30	4	low	no	no
+others2	3	M	31-35	4	high	no	no
+others3	3	M	26-30	2	low	no	no
+others4	3	F	26-30	3	mid	no	no
+others5	3	M	46-50	4	high	no	no
+others6	3	F	31-35	4	high	no	no
+others7	3	M	26-30	3	mid	no	yes
+others8	3	M	21-25	3	low	no	no
+others9	3	M	21-25	3	low	no	no
+others10	3	M	21-25	3	low	no	no
+others11	3	M	21-25	3	low	no	no
+others12	3	M	31-35	2	low	no	no
+others13	3	M	21-25	4	mid	no	no
+others14	3	M	21-25	4	mid	no	no
+others15	3	F	26-30	2	low	no	no
+others16	3	M	26-30	3	high	no	no
+others17	3	M	26-30	4	mid	no	no
+others18	3	F	36-40	4	high	no	yes
+others19	3	M	31-35	2	low	no	no
+others20	3	M	31-35	2	low	no	no
+others21	3	F	21-25	4	high	no	no
+others22	3	F	21-25	2	low	no	no
+others23	3	M	26-30	3	mid	no	no
+others24	3	F	31-35	4	high	no	no
+others25	3	F	26-30	3	mid	no	no
+others26	3	M	26-30	4	high	no	no
+others27	3	M	31-35	3	low	no	no

@@ -1,0 +1,165 @@
+ID	NAME	STYLE	RANK	YEAR	AUTHOR												
+																	
+T001	old folks at home	early	492	1851	stephen foster												
+T002	dark eyes	early	397	1884	russian folk song												
+T003	when the saints go marching in	early	282	1896	louis armstrong												
+T004	some of these days	early	405	1910	shelton brooks												
+T005	my melancholy baby	early	164	1911	william frawley												
+T006	st louis blues	early	20	1914	w. c. handy												
+T007	12th street rag	early	351	1914	euday l. bowman												
+T008	poor butterfly	early	196	1916	raymond hubbell												
+T009	indiana	early	41	1917	james f. hanley												
+T010	tiger rag	early	259	1917	original dixieland jass band												
+T011	darktown strutters ball	dixieland	547	1917	shelton brooks												
+T012	after you ve gone	dixieland	34	1918	turner layton												
+T013	royal garden blues	early	204	1919	spencer williams 												
+T014	baby wont you please come home	early	205	1919	clarence williams												
+T015	indian summer	early	267	1919	victor herbert												
+T016	avalon	dixieland	109	1920	al jolson												
+T017	bourbon street parade	dixieland		1920	paul barbarin												
+T018	the sheik of araby	musical;film;ballad	165	1921	ted snyder												
+T019	the charleston	bigband;swing;charleston	988	1923	james johnson												
+T020	sweet georgia brown	dixieland	16	1925	ben bernie												
+T021	dinah	dixieland	134	1925	harry akst												
+T022	someone to watch over me	musical;film;ballad	77	1926	george gershwin												
+T023	bye bye blackbird	dixieland	126	1926	ray henderson												
+T024	chloe	musical;film;ballad	441	1927	neil moret												
+T025	black and tan fantasy	other	837	1927	duke ellignton												
+T026	lover come back to me	musical;film;ballad	69	1928	sigmund romberg												
+T027	softly as in a morning sunrise	musical;film;ballad	132	1928	sigmund romberg												
+T028	basin street blues	dixieland	182	1928	spencer williams												
+T029	star dust	musical;film;ballad	12	1929	hoagy carmichael												
+T030	honeysuckle rose	musical;film;ballad	15	1929	fats waller												
+T031	aint misbehavin	musical;film;ballad	32	1929	"harry brooks, fats waller"												
+T032	black and blue	musical;film;ballad	432	1929	fats waller												
+T033	body and soul	musical;film;ballad	1	1930	edward heyman												
+T034	it dont mean a thing	bigband;swing;charleston		1932	duke ellignton												
+T035	yesterdays	musical;film;ballad	9	1933	jerome kern												
+T036	sophisticated lady	bigband;swing;charleston		1933	duke ellignton												
+T037	summertime	musical;film;ballad	3	1935	george gershwin												
+T038	there is no greater love	musical;film;ballad	52	1936	isham jones												
+T039	stompin at the savoy	bigband;swing;charleston	48	1936	edgar sampson												
+T040	easy to love	musical;film;ballad	122	1936	cole porter												
+T041	a fine romance	musical;film;ballad	427	1936	jerome kern												
+T042	caravan	bigband;swing;charleston		1936	duke ellignton												
+T043	sing sing sing	bigband;swing;charleston		1936	luigi prima												
+T044	my funny valentine	musical;film;ballad	6	1937	richard rodgers												
+T045	easy living	musical;film;ballad	80	1937	ralph rainger												
+T046	a foggy day	musical;film;ballad	88	1937	george gershwin												
+T047	all the things you are	musical;film;ballad	2	1939	jerome kern												
+T048	moonlight serenade	bigband;swing;charleston	882	1939	glenn miller												
+T049	in the mood	bigband;swing;charleston	775	1939	glenn miller												
+T050	cottontail	bigband;swing;charleston	233	1940	duke ellignton												
+T051	a string of pearls	bigband;swing;charleston		1941	jerry gray												
+T052	dont get around much anymore	bigband;swing;charleston	104	1942	duke ellignton												
+T053	a night in tunisia	bebop	40	1942	dizzy gillespie												
+T054	epistrophy	bebop	346	1942	thelonious monk												
+T055	dearly beloved	musical;film;ballad	595	1942	fred astaire												
+T056	the golden wedding	bigband;swing;charleston		1942	woody herman												
+T057	well you neednt	bebop	313	1944	thelonious monk												
+T058	round midnight	cool	4	1944	thelonious monk												
+T059	the more i see you	musical;film;ballad	318	1945	harry warren												
+T060	for heavens sake	musical;film;ballad	456	1946	elise bretton												
+T061	stella by starlight	musical;film;ballad	10	1946	victor young												
+T062	anthropology	bebop	483	1946	charlie parker												
+T063	ornithology	bebop	462	1946	charlie parker												
+T064	but beautiful	musical;film;ballad	133	1947	jimmi van heusen												
+T065	donna lee	bebop	194	1947	miles davis												
+T066	dexterity	bebop	859	1947	charlie parker												
+T067	the night has a thousand eyes	musical;film;ballad	273	1948	benjamin weisman												
+T068	afternoon in paris	bigband;swing;charleston	532	1949	john lewis												
+T069	boplicity	cool		1949	miles davis & gil evans												
+T070	conception	bebop	868	1950	george shearing												
+T071	straight no chaser	bebop	163	1951	thelonious monk												
+T072	blues for alice	bebop		1951	charlie parker												
+T073	when i fall in love	musical;film;ballad	137	1952	victor young												
+T074	four	bebop	537	1954	miles davis												
+T075	con alma	bossa		1954	dizzy gillespie												
+T076	django	other	211	1954	john lewis												
+T077	daahoud	bebop	765	1955	 max roach												
+T078	the duke	cool	833	1955	dave brubeck												
+T079	when sunny gets blue	musical;film;ballad	517	1956	jack segal												
+T080	dear old stockholm	cool		1957	arr. stan getz												
+T081	milestones	bebop	287	1958	miles davis												
+T082	chega de saudade	bossa		1958	antonio carlos jobim												
+T083	giant steps	bebop	254	1959	john coltrane												
+T084	afro blue	bebop	772	1959	mongo santamaría												
+T085	blue in green	cool	426	1959	miles davis												
+T086	desafinado	bossa	713	1959	antonio carlos jobim												
+T087	black orpheus	bossa		1959	luiz bonfa												
+T088	my favorite things	musical;film;ballad	333	1959	richard rodgers												
+T089	countdown	bebop		1960	john coltrane												
+T090	take five	cool	656	1960	paul desmond												
+T091	corcovado	bossa		1960	antonio carlos jobim												
+T092	all my tomorrows	musical;film;ballad		1961	van heusen 												
+T093	days of wine and roses	musical;film;ballad	135	1962	henry mancini												
+T094	african flower	other		1962	duke ellington												
+T095	the girl from ipanema	bossa	479	1963	antonio carlos jobim												
+T096	blue bossa	bossa	557	1963	joe henderson												
+T097	black nile	postbop;modaljazz;hardbop		1964	wayne shorter												
+T098	deluge	postbop;modaljazz;hardbop		1964	wayne shorter												
+T099	equinox	other		1964	john coltrane												
+T100	the shadow of your smile	musical;film;ballad	276	1965	johnny mandel												
+T101	black diamond	postbop;modaljazz;hardbop		1965	roland kirk												
+T102	ceora	postbop;modaljazz;hardbop		1965	lee morgan												
+T103	footprints	postbop;modaljazz;hardbop	618	1966	wayne shorter												
+T104	dolphin dance	postbop;modaljazz;hardbop	742	1966	herbie hancock												
+T105	fall	postbop;modaljazz;hardbop		1967	wayne shorter												
+T106	nefertiti	postbop;modaljazz;hardbop		1967	wayne shorter												
+T107	a child is born	other	323	1969	thad jones												
+T108	in a silent way	fusion		1969	joe zawinul												
+T109	swing swing swing	bigband;swing;charleston		1970	john williams												
+T110	sanctuary	fusion		1970	wayne shorter												
+T111	crystal silence	fusion		1972	chick corea 												
+T112	birds of fire	fusion		1973	john mclaughlin												
+T113	brownout	fusion		1973	gary burton												
+T114	five hundred miles high	fusion		1973	chick corea 												
+T115	watermelon man	fusion		1973	herbie hancock												
+T116	sanctuary mahavishnu	fusion		1973	john mclaughlin												
+T117	black narcissus	postbop;modaljazz;hardbop		1976	joe henderson												
+T118	bright size life	fusion		1976	pat metheny												
+T119	lakes	fusion		1977	pat metheny												
+T120	the dolphin	fusion		1981	stan getz												
+T121	city gate	fusion		1986	chick corea 												
+T122	nuages	other		1940	django reinhardt												
+T123	virgo	postbop;modaljazz;hardbop		1964	wayne shorter												
+T124	self portrait in three colors	postbop;modaljazz;hardbop		1959	charles mingus												
+T125	smooch	postbop;modaljazz;hardbop		1953	charles mingus												
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	
+																	

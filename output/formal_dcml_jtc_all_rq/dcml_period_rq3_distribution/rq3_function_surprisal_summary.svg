@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="480" viewBox="0 0 860 480">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 20px; font-weight: 700; }
+    .small { font-size: 11px; fill: #52606d; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="55" y="40">RQ3 melody-only surprisal by harmonic function</text>
+<line class="axis" x1="90" y1="400" x2="820" y2="400"/>
+<line class="axis" x1="90" y1="70" x2="90" y2="400"/>
+<rect x="111.9" y="270.0" width="77.9" height="130.0" fill="#2f6f9f" rx="2"/>
+<text class="small" x="111.9" y="264.0">4.70</text>
+<text class="small" transform="translate(150.8 425) rotate(-35)" text-anchor="end">classical:D</text>
+<rect x="233.6" y="316.7" width="77.9" height="83.3" fill="#2f6f9f" rx="2"/>
+<text class="small" x="233.6" y="310.7">4.55</text>
+<text class="small" transform="translate(272.5 425) rotate(-35)" text-anchor="end">classical:S</text>
+<rect x="355.2" y="321.0" width="77.9" height="79.0" fill="#2f6f9f" rx="2"/>
+<text class="small" x="355.2" y="315.0">4.54</text>
+<text class="small" transform="translate(394.2 425) rotate(-35)" text-anchor="end">classical:T</text>
+<rect x="476.9" y="157.7" width="77.9" height="242.3" fill="#b84a6b" rx="2"/>
+<text class="small" x="476.9" y="151.7">5.06</text>
+<text class="small" transform="translate(515.8 425) rotate(-35)" text-anchor="end">romantic:D</text>
+<rect x="598.6" y="149.0" width="77.9" height="251.0" fill="#b84a6b" rx="2"/>
+<text class="small" x="598.6" y="143.0">5.08</text>
+<text class="small" transform="translate(637.5 425) rotate(-35)" text-anchor="end">romantic:S</text>
+<rect x="720.2" y="206.1" width="77.9" height="193.9" fill="#b84a6b" rx="2"/>
+<text class="small" x="720.2" y="200.1">4.90</text>
+<text class="small" transform="translate(759.2 425) rotate(-35)" text-anchor="end">romantic:T</text>
+</svg>

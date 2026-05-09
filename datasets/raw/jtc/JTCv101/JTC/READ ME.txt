@@ -1,0 +1,108 @@
+The Jazz Tune Collection (JTC) version 1.01
+
+The JTC is a database of 125 Jazz melodies annotated with phrase boundaries. The JTC is intended as a benchmark dataset to evaluate computational models of melody segmentation.
+
+CONTENTS
+ 
+	\BOUNDARY_ANNOTATIONS
+	\EXTRACTED_MELODY_MIDI
+	\EXTRACTED_MELODY_TSV
+	\METADATA
+	\SOURCES
+	READ ME FILE
+	FMA15 paper
+	
+	If you want to evaluate models of melody segmentation, we recommend using the melodies in the \EXTRACTED_MELODY_TSV folder. The files therein contain the melodies as presented to the human annotators (only pitch and quantised onsets), as well as phrase ends marked by three human annotators.
+	
+	If you want to check, enhance, or visualise the annotations, use the files contained in the \BOUNDARY_ANNOTATIONS and \EXTRACTED_MELODY_MIDI folders. (We recommend using Audacity.) 
+	
+	If you want to check the(uncorrected and unquantised) source files of the jazz tunes containing the melodies check the \SOURCES folder.
+	
+	Below we describe the contents of each folder in more detail.  
+	
+
+\BOUNDARY_ANNOTATIONS
+
+	This folder contains the segment boundary annotations for each of the melodies of the JTC. All annotations were produced using MoSSA [1].
+	
+	For each melody, segment boundaries and salience were annotated by one amateur musician and one degree-level musician. These are referred to, respectively, as (A)nnotation (L)ayer AL1 and AL2 in our naming format. For each melody there is also a third annotation of segment boundaries, produced by one of a group of extra 27 annotators. The third annotation layer is referred to as AL3 in our naming format. 
+	
+	The name format for the files containing the annotations is:
+	
+		JTCv###		= (J)azz (T)une (C)ollection (v)ersion #.##
+		AL#			= (A)nnotation (L)ayer # 
+		A#			= (A)nnotator #
+		T### 		= (T)une ID number ### 
+
+		example : JTCv101_AL3_A15_T003.TSV
+	
+	The files holding the annotations are in Audacity' Tab-Separated-Value (TSV) format [4], i.e. each line is a boundary, and each value in a line is: 
+	
+		segment start time (seconds) \tab segment end time (seconds) \tab hierarchy/salience
+		
+		Since the annotations correspond to boundaries, start/end times are the equal. 
+		
+		The third value scores the perceived salience of the boundary by the annotator. 
+		
+		In AL1 salience values correspond to the structural hierarchy of the segments, under the assumption that higher levels correspond to higher salience. The layers are given an integer number ranging between [0,N], with N corresponding to the highest number of hierarchical layers determined by the annotator for a particular melody (commonly 2-4). The value '0' is used to determine the level of the phrase. Any boundary demarcating segments larger than phrases are given a value > 0. Even though in most melodies '0' is the lowest hierarchical level, in some of melodies the annotations also have salience values of '-1', which are use to denote subphrase level boundaries. (It is important to notice that the salience annotation process assumes a strict hierarchy, i.e. each segment is completely and exactly contained in each larger segment. With this assumption coding the hierarchical level of a boundary as, for example, '3' can be used as short for {0,1,2,3}. The assumption of strict hierarchy was taken to simplify the annotation process.)
+		
+		In AL2 the salience annotations differentiate between 'very clear' and 'relatively clear/unclear' boundaries. Salience values are hence coded using {0,1}, with 0 for relatively clear/unclear' boundaries, and 1 to denote 'very clear' boundaries.
+		
+		In AL3 annotators were not asked to score salience, hence all values are 0.
+		
+		Important: The first line in all files the TSV boundary annotation files is used to encode an 'offset' value. The first line contains three values. The first two are an exact to copy of the offset value in seconds. The third line contains the label '-2' which we use to denote 'offset'. The 'offset' value corresponds to the amount of seconds that the annotations need to be offset so that they are synchronised correctly with the MIDI renditions of the melodies.
+		
+\EXTRACTED_MELODY_MIDI
+
+	This folder contains the melodies that have been annotated in MIDI format. In the cases were the source jazz files are polyphonic, the melodies were extracted manually. All melodies were exported as MIDI files, using a resolution of 480 ticks-per-quarter-note. All melodies were inspected manually, and, if needed, corrected. Correction of the melodies consisted in adjusting note onsets, as well as removing ornamentation. Notated lead-sheets from the Real Book series were used as reference for the correction process. Is important to notice that not all ornamentation was removed, only that which was considered to severely compromise the understanding of segment structure. Also, while JTC MIDI melody encodings might contain information of meter, key, and dynamics, this information was not checked nor corrected, and this information was not included in the audio renditions heard by the annotators. Thus, the use of any information other than onsets and pitches to evaluate computational models of segmentation is discouraged.
+	
+	File Name Format Melody Encodings
+
+		JTCv###		= (J)azz (T)une (C)ollection (v)ersion #.##
+		T### 		= (T)une ID number ### 
+
+		example : JTCv101_T003.(mid|txt)
+	
+\EXTRACTED_MELODY_TSV
+
+	This folder contains the JTC melodies and phrase annotations in a single file. Files in this folder are in Tab-Separated-Value (TSV) format [4].
+	
+	Each TSV file is a melody matrix [notes,attributes], example:
+
+				   onset (sec) pitch (midi num)    A1  A2  A3
+		 line 1    0.45        52                  0   0   0
+		 line 2    1.45        53                  0   0   0
+		 line 3    1.56        52                  0   1   0
+		 line 4    2.34        55                  1   0   0
+	
+	Melody note onsets is encoded with a precision of 4 decimal values.
+	Melody note pitch is encoded using the MIDI pitch number standard. 
+	A1,2,3 encode phrase END markings in binary format, where a '0' encodes binary absence and a '1' encodes boundary presence.
+
+	File Name Format Melody TSV Encodings
+
+		JTCv###		= (J)azz (T)une (C)ollection (v)ersion #.##
+		T### 		= (T)une ID number ### 
+
+		example : JTCv101_T003.(tsv)
+
+\METADATA
+	This folder contains the metadata of the JTC. The metadata files are in Tab-Separated-Value (TSV) format [4]. 
+	
+	The JTD_metadata file contains metadata of the melodies (jtc id, tune name, tune substyle or subgenre of jazz, year of composition/release, author). 
+	
+	The Annotators_metadata file containts information of the annotators (sex, age_range, level of musicianship, etc.)
+	
+\SOURCES
+
+	This folder contains the uncorrected sources from of the JTC database. The files in this folder are in either MIDI or MXL format [2]. MIDI files are in in most cases polyphonic. The melody section of these files was often found to be performed. MXL files are in most cases monophonic. The melodies in these files have been encoded following jazz lead sheet conventions [3]. 
+
+REFERENCES
+
+[1] Rodriguez-Lopez, M., Bountouridis, D., Volk , A., (2015). A Novel Music Segmentation I1nterface and the Jazz Tune Collection. In Proceedings of the 5th Folk Music Analysis Workshop (FMA), Paris, pp. 79-85.
+
+[2] For more information on MIDI see https://en.wikipedia.org/wiki/MIDI . For more information on mxl see https://en.wikipedia.org/wiki/MusicXML . To playback and edit MIDI/MXL we recommend using Musescore ( https://musescore.org/ ).
+
+[3] See https://en.wikipedia.org/wiki/Lead_sheet
+
+[4] See https://en.wikipedia.org/wiki/Tab-separated_values

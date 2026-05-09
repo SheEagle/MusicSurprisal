@@ -1,0 +1,14 @@
+{
+  "accuracy": 0.9816232771822359,
+  "precision": 0.9841269841269841,
+  "recall": 0.992,
+  "f1": 0.9880478087649401,
+  "auc": 0.994,
+  "permutation_p_accuracy": 0.000999000999000999,
+  "permutations": 1000,
+  "pieces": 653,
+  "source_filter": [
+    "js_fake",
+    "jsb"
+  ]
+}

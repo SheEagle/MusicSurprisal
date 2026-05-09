@@ -1,0 +1,13 @@
+{
+  "accuracy": 0.8441926345609065,
+  "precision": 0.9617834394904459,
+  "recall": 0.755,
+  "f1": 0.8459383753501402,
+  "auc": 0.9706535947712418,
+  "permutation_p_accuracy": 0.001996007984031936,
+  "permutations": 500,
+  "pieces": 353,
+  "pair_name": "jsb_vs_cocochorales_test1",
+  "human_source": "jsb",
+  "ai_source": "cocochorales"
+}

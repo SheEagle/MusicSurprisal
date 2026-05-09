@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="456" viewBox="0 0 980 456">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 21px; font-weight: 700; }
+    .label { font-size: 13px; }
+    .small { font-size: 11px; fill: #52606d; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="70" y="38">jsb_vs_cocochorales_test1: sequence-dependency effects</text>
+<line class="axis" x1="270" y1="406" x2="900" y2="406"/>
+<line class="axis" x1="585.0" y1="70" x2="585.0" y2="406"/>
+<text class="small" x="270" y="438">human higher</text>
+<text class="small" x="840" y="438">AI higher</text>
+<text class="small" x="30" y="98.0">state_entropy</text>
+<rect x="325.1" y="84.0" width="259.9" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="281.1" y="98.0">-2.36</text>
+<text class="small" x="30" y="146.0">entropy_rate_order1</text>
+<rect x="311.1" y="132.0" width="273.9" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="267.1" y="146.0">-2.48</text>
+<text class="small" x="30" y="194.0">entropy_rate_order2</text>
+<rect x="513.9" y="180.0" width="71.1" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="469.9" y="194.0">-0.64</text>
+<text class="small" x="30" y="242.0">predictability_gain_order1</text>
+<rect x="505.2" y="228.0" width="79.8" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="461.2" y="242.0">-0.72</text>
+<text class="small" x="30" y="290.0">predictability_gain_order2</text>
+<rect x="366.0" y="276.0" width="219.0" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="322.0" y="290.0">-1.99</text>
+<text class="small" x="30" y="338.0">same_state_transition_rate</text>
+<rect x="585.0" y="324.0" width="148.6" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="741.6" y="338.0">1.35</text>
+<text class="small" x="30" y="386.0">dominant_transition_rate</text>
+<rect x="585.0" y="372.0" width="190.7" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="783.7" y="386.0">1.73</text>
+</svg>

@@ -1,0 +1,13 @@
+{
+  "accuracy": 0.801,
+  "precision": 0.9146005509641874,
+  "recall": 0.664,
+  "f1": 0.7694090382387023,
+  "auc": 0.8978,
+  "permutation_p_accuracy": 0.000999000999000999,
+  "permutations": 1000,
+  "pieces": 1000,
+  "pair_name": "maestro_matched_excerpt_vs_music_transformer_sample500",
+  "human_source": "maestro",
+  "ai_source": "music_transformer"
+}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="494" viewBox="0 0 980 494">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 21px; font-weight: 700; }
+    .label { font-size: 13px; }
+    .small { font-size: 11px; fill: #52606d; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="70" y="38">maestro_matched_excerpt_vs_music_transformer_sample500: AI-human surprisal by special position</text>
+<line class="axis" x1="300" y1="434" x2="900" y2="434"/>
+<line class="axis" x1="600.0" y1="65" x2="600.0" y2="434"/>
+<text class="label" x="490" y="474">AI minus human surprisal</text>
+<text class="small" x="28" y="92.1">annotated_boundary_exact</text>
+<rect x="600.0" y="78.1" width="260.9" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="868.9" y="92.1">2.06</text>
+<text class="small" x="28" y="138.2">annotated_boundary_zone_pm4</text>
+<rect x="600.0" y="124.2" width="231.1" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="839.1" y="138.2">1.83</text>
+<text class="small" x="28" y="184.3">closing_10pct</text>
+<rect x="600.0" y="170.3" width="231.2" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="839.2" y="184.3">1.83</text>
+<text class="small" x="28" y="230.4">far_from_annotated_boundary</text>
+<rect x="600.0" y="216.4" width="177.2" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="785.2" y="230.4">1.40</text>
+<text class="small" x="28" y="276.6">middle_10pct</text>
+<rect x="600.0" y="262.6" width="169.3" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="777.3" y="276.6">1.34</text>
+<text class="small" x="28" y="322.7">opening_10pct</text>
+<rect x="600.0" y="308.7" width="162.7" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="770.7" y="322.7">1.29</text>
+<text class="small" x="28" y="368.8">post_boundary_4</text>
+<rect x="600.0" y="354.8" width="234.8" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="842.8" y="368.8">1.85</text>
+<text class="small" x="28" y="414.9">pre_boundary_4</text>
+<rect x="600.0" y="400.9" width="226.5" height="20" fill="#b84a6b" rx="2"/>
+<text class="small" x="834.5" y="414.9">1.79</text>
+</svg>

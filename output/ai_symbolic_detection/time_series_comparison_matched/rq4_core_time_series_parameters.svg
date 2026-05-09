@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 22px; font-weight: 700; }
+    .label { font-size: 13px; }
+    .small { font-size: 11px; fill: #52606d; }
+    .cell { font-size: 11px; fill: #1d252c; font-weight: 700; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="70" y="38">Core RQ4 time-series parameters by pair</text>
+<line class="axis" x1="80" y1="280" x2="1070" y2="280"/>
+<text class="small" x="70" y="58">Bars show Cohen&apos;s d for AI minus human.</text>
+<text class="small" transform="translate(85 505) rotate(35)">variance</text>
+<rect x="90" y="236.2" width="28" height="43.8" fill="#2f6f9f"/>
+<rect x="126" y="214.0" width="28" height="66.0" fill="#c46a32"/>
+<rect x="162" y="280.0" width="28" height="22.2" fill="#7a4fb3"/>
+<text class="small" transform="translate(245 505) rotate(35)">peak_rate</text>
+<rect x="250" y="225.6" width="28" height="54.4" fill="#2f6f9f"/>
+<rect x="286" y="100.0" width="28" height="180.0" fill="#c46a32"/>
+<rect x="322" y="227.3" width="28" height="52.7" fill="#7a4fb3"/>
+<text class="small" transform="translate(405 505) rotate(35)">peak_mass</text>
+<rect x="410" y="211.5" width="28" height="68.5" fill="#2f6f9f"/>
+<rect x="446" y="117.2" width="28" height="162.8" fill="#c46a32"/>
+<rect x="482" y="232.7" width="28" height="47.3" fill="#7a4fb3"/>
+<text class="small" transform="translate(565 505) rotate(35)">smoothness</text>
+<rect x="570" y="280.0" width="28" height="23.2" fill="#2f6f9f"/>
+<rect x="606" y="280.0" width="28" height="108.3" fill="#c46a32"/>
+<rect x="642" y="227.7" width="28" height="52.3" fill="#7a4fb3"/>
+<text class="small" transform="translate(725 505) rotate(35)">lag1_autocorr</text>
+<rect x="730" y="270.1" width="28" height="9.9" fill="#2f6f9f"/>
+<rect x="766" y="280.0" width="28" height="60.0" fill="#c46a32"/>
+<rect x="802" y="280.0" width="28" height="25.3" fill="#7a4fb3"/>
+<text class="small" transform="translate(885 505) rotate(35)">max_autocorr_lag2_16</text>
+<rect x="890" y="254.6" width="28" height="25.4" fill="#2f6f9f"/>
+<rect x="926" y="280.0" width="28" height="24.8" fill="#c46a32"/>
+<rect x="962" y="280.0" width="28" height="5.4" fill="#7a4fb3"/>
+<rect x="845" y="74" width="12" height="12" fill="#2f6f9f"/>
+<text class="small" x="863" y="85">cocochorales</text>
+<rect x="845" y="96" width="12" height="12" fill="#c46a32"/>
+<text class="small" x="863" y="107">js_fake</text>
+<rect x="845" y="118" width="12" height="12" fill="#7a4fb3"/>
+<text class="small" x="863" y="129">maestro_matched_excerpt_vs_music_transformer_sample500</text>
+</svg>

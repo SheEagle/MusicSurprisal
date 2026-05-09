@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="420" viewBox="0 0 820 420">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 22px; font-weight: 700; }
+    .small { font-size: 11px; fill: #52606d; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="60" y="38">Cross-generator generalization</text>
+<line class="axis" x1="80" y1="340" x2="780" y2="340"/>
+<line class="axis" x1="80" y1="70" x2="80" y2="340"/>
+<text class="small" x="22" y="344">0.0</text>
+<text class="small" x="22" y="76">1.0</text>
+<rect x="140" y="164.4" width="48" height="175.6" fill="#2f6f9f"/>
+<rect x="195" y="108.1" width="48" height="231.9" fill="#7a4fb3"/>
+<text class="small" x="130" y="368">js_fake</text>
+<text class="small" x="130" y="384">→ cocochorales</text>
+<rect x="320" y="94.6" width="48" height="245.4" fill="#2f6f9f"/>
+<rect x="375" y="90.4" width="48" height="249.6" fill="#7a4fb3"/>
+<text class="small" x="310" y="368">cocochorales</text>
+<text class="small" x="310" y="384">→ js_fake</text>
+<text class="small" x="590" y="86"><tspan fill="#2f6f9f">accuracy</tspan> / <tspan fill="#7a4fb3">AUC</tspan></text>
+</svg>

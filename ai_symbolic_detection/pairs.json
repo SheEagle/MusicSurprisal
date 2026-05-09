@@ -1,0 +1,36 @@
+[
+  {
+    "pair_name": "jsb_vs_js_fake",
+    "human_source": "jsb",
+    "ai_source": "js_fake",
+    "human_dataset": "JSB Chorales",
+    "ai_dataset": "JS Fake Chorales",
+    "ai_architecture": "RNN / KS_Chorus",
+    "status": "implemented",
+    "events_csv": "data/events_dcml_jtc_all_rq.csv"
+  },
+  {
+    "pair_name": "maestro_vs_music_transformer",
+    "human_source": "maestro",
+    "ai_source": "music_transformer",
+    "human_dataset": "MAESTRO",
+    "ai_dataset": "Listen to Transformer Music Transformer samples",
+    "ai_architecture": "Transformer",
+    "status": "matched_excerpt_prototype_sample500",
+    "events_csv": "data/pairs/maestro_matched_excerpt_vs_music_transformer_sample500.csv",
+    "output_dir": "output/ai_symbolic_detection/maestro_matched_excerpt_vs_music_transformer_sample500",
+    "notes": "Prototype uses 500 downloaded Music Transformer samples and 500 length-matched held-out MAESTRO excerpts. Magenta describes 99,975 downloadable MIDI samples under CC0."
+  },
+  {
+    "pair_name": "jsb_vs_cocochorales",
+    "human_source": "jsb",
+    "ai_source": "cocochorales",
+    "human_dataset": "JSB Chorales",
+    "ai_dataset": "CocoChorales MIDI",
+    "ai_architecture": "Coconet / MIDI-DDSP pipeline",
+    "status": "prototype_test_chunk_1",
+    "events_csv": "data/pairs/jsb_vs_cocochorales_test1.csv",
+    "output_dir": "output/ai_symbolic_detection/jsb_vs_cocochorales_test1",
+    "notes": "Prototype uses CocoChorales note_expression test chunk 1, converted from soprano voice CSV."
+  }
+]

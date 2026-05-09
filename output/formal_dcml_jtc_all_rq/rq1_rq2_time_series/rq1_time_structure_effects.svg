@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="550" viewBox="0 0 980 550">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 21px; font-weight: 700; }
+    .label { font-size: 13px; }
+    .small { font-size: 11px; fill: #52606d; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="70" y="38">RQ1 time-structure effects</text>
+<line class="axis" x1="310" y1="490" x2="900" y2="490"/>
+<line class="axis" x1="605.0" y1="65" x2="605.0" y2="490"/>
+<text class="small" x="620" y="88">positive = JTC higher than DCML</text>
+<text class="small" x="25" y="90.2">state_entropy</text>
+<rect x="348.5" y="76.2" width="256.5" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="304.5" y="90.2">-2.97</text>
+<text class="small" x="25" y="132.8">entropy_rate_order1</text>
+<rect x="370.5" y="118.8" width="234.5" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="326.5" y="132.8">-2.72</text>
+<text class="small" x="25" y="175.2">entropy_rate_order2</text>
+<rect x="403.6" y="161.2" width="201.4" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="359.6" y="175.2">-2.33</text>
+<text class="small" x="25" y="217.8">dominant_transition_rate</text>
+<rect x="605.0" y="203.8" width="193.4" height="20" fill="#c46a32" rx="2"/>
+<text class="small" x="806.4" y="217.8">2.24</text>
+<text class="small" x="25" y="260.2">max_local_variance</text>
+<rect x="499.6" y="246.2" width="105.4" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="455.6" y="260.2">-1.22</text>
+<text class="small" x="25" y="302.8">same_state_transition_rate</text>
+<rect x="605.0" y="288.8" width="99.9" height="20" fill="#c46a32" rx="2"/>
+<text class="small" x="712.9" y="302.8">1.16</text>
+<text class="small" x="25" y="345.2">sd_surprisal</text>
+<rect x="511.3" y="331.2" width="93.7" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="467.3" y="345.2">-1.09</text>
+<text class="small" x="25" y="387.8">curve_range</text>
+<rect x="524.8" y="373.8" width="80.2" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="480.8" y="387.8">-0.93</text>
+<text class="small" x="25" y="430.2">mean_surprisal</text>
+<rect x="605.0" y="416.2" width="67.7" height="20" fill="#c46a32" rx="2"/>
+<text class="small" x="680.7" y="430.2">0.78</text>
+<text class="small" x="25" y="472.8">mean_local_variance</text>
+<rect x="547.9" y="458.8" width="57.1" height="20" fill="#2f6f9f" rx="2"/>
+<text class="small" x="503.9" y="472.8">-0.66</text>
+</svg>

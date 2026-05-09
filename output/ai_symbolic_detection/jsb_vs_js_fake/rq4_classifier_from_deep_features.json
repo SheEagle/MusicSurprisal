@@ -1,0 +1,13 @@
+{
+  "accuracy": 0.9800918836140888,
+  "precision": 0.9840954274353877,
+  "recall": 0.99,
+  "f1": 0.9870388833499502,
+  "auc": 0.9916470588235294,
+  "permutation_p_accuracy": 0.000999000999000999,
+  "permutations": 1000,
+  "pieces": 653,
+  "pair_name": "jsb_vs_js_fake",
+  "human_source": "jsb",
+  "ai_source": "js_fake"
+}

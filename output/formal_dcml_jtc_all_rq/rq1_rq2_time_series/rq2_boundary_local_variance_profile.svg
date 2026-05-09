@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="540" viewBox="0 0 980 540">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 21px; font-weight: 700; }
+    .label { font-size: 13px; }
+    .small { font-size: 11px; fill: #52606d; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="70" y="38">RQ2 boundary-aligned local volatility</text>
+<line class="axis" x1="80" y1="460" x2="860" y2="460"/>
+<line class="axis" x1="80" y1="70" x2="80" y2="460"/>
+<line x1="470.0" y1="70" x2="470.0" y2="460" stroke="#333" stroke-width="1.4" stroke-dasharray="5 5"/>
+<text class="label" x="380" y="505">Event position relative to boundary</text>
+<text class="label" transform="translate(24 330) rotate(-90)">Local variance</text>
+<polyline points="80.0,175.9 112.5,177.1 145.0,180.3 177.5,185.8 210.0,180.9 242.5,181.4 275.0,177.2 307.5,166.4 340.0,157.8 372.5,148.5 405.0,140.3 437.5,136.2 470.0,131.9 502.5,128.8 535.0,132.5 567.5,134.1 600.0,135.2 632.5,141.5 665.0,154.0 697.5,161.5 730.0,166.4 762.5,174.3 795.0,177.7 827.5,178.5 860.0,181.0" fill="none" stroke="#2f6f9f" stroke-width="4"/>
+<polyline points="80.0,385.9 112.5,383.3 145.0,376.9 177.5,379.9 210.0,375.2 242.5,392.1 275.0,378.9 307.5,380.8 340.0,379.5 372.5,378.2 405.0,378.6 437.5,378.9 470.0,379.6 502.5,376.1 535.0,381.3 567.5,380.1 600.0,388.9 632.5,388.7 665.0,389.6 697.5,393.5 730.0,389.7 762.5,387.4 795.0,377.1 827.5,401.1 860.0,401.2" fill="none" stroke="#c46a32" stroke-width="4"/>
+<line x1="880" y1="100" x2="908" y2="100" stroke="#2f6f9f" stroke-width="4"/>
+<text class="small" x="916" y="104">DCML classical</text>
+<line x1="880" y1="126" x2="908" y2="126" stroke="#c46a32" stroke-width="4"/>
+<text class="small" x="916" y="130">JTC jazz</text>
+</svg>

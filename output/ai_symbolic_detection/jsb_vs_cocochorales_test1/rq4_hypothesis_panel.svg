@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380">
+  <rect width="100%" height="100%" fill="#fbfaf7"/>
+  <style>
+    text { font-family: Arial, Helvetica, sans-serif; fill: #1d252c; }
+    .title { font-size: 22px; font-weight: 700; }
+    .label { font-size: 14px; }
+    .small { font-size: 11px; fill: #52606d; }
+    .axis { stroke: #9aa5b1; stroke-width: 1; }
+  </style>
+<text class="title" x="60" y="40">RQ4 hypothesis checks</text>
+<circle cx="72" cy="81" r="6" fill="#b84a4a"/>
+<text class="label" x="92" y="85">Lower variance: does not support (AI-human=4.775, d=1.10)</text>
+<circle cx="72" cy="131" r="6" fill="#b84a4a"/>
+<text class="label" x="92" y="135">Fewer peaks: does not support (AI-human=0.083, d=1.36)</text>
+<circle cx="72" cy="181" r="6" fill="#b84a4a"/>
+<text class="label" x="92" y="185">Less dramatic peak mass: does not support (AI-human=0.617, d=1.72)</text>
+<circle cx="72" cy="231" r="6" fill="#2f6f9f"/>
+<text class="label" x="92" y="235">More regular autocorr: supports (AI-human=0.139, d=0.64)</text>
+<circle cx="72" cy="281" r="6" fill="#b84a4a"/>
+<text class="label" x="92" y="285">Smoother curve: does not support (AI-human=-0.032, d=-0.58)</text>
+</svg>
