@@ -1,0 +1,80 @@
+{
+  "model_a_melody_only": [
+    {
+      "epoch": 1,
+      "mean_loss_nats": 2.1098819471457424
+    },
+    {
+      "epoch": 2,
+      "mean_loss_nats": 1.959233498748611
+    },
+    {
+      "epoch": 3,
+      "mean_loss_nats": 1.914006934446447
+    },
+    {
+      "epoch": 4,
+      "mean_loss_nats": 1.886049450320356
+    },
+    {
+      "epoch": 5,
+      "mean_loss_nats": 1.8662156190942316
+    },
+    {
+      "epoch": 6,
+      "mean_loss_nats": 1.8515773476923214
+    }
+  ],
+  "model_b_current_harmony": [
+    {
+      "epoch": 1,
+      "mean_loss_nats": 2.111707131652271
+    },
+    {
+      "epoch": 2,
+      "mean_loss_nats": 1.9609054256887997
+    },
+    {
+      "epoch": 3,
+      "mean_loss_nats": 1.914648711681366
+    },
+    {
+      "epoch": 4,
+      "mean_loss_nats": 1.886863079141168
+    },
+    {
+      "epoch": 5,
+      "mean_loss_nats": 1.8683068761054207
+    },
+    {
+      "epoch": 6,
+      "mean_loss_nats": 1.8545679975958431
+    }
+  ],
+  "model_c_harmony_history": [
+    {
+      "epoch": 1,
+      "mean_loss_nats": 2.098657395033275
+    },
+    {
+      "epoch": 2,
+      "mean_loss_nats": 1.9373225254171036
+    },
+    {
+      "epoch": 3,
+      "mean_loss_nats": 1.8848167342298172
+    },
+    {
+      "epoch": 4,
+      "mean_loss_nats": 1.855536871096667
+    },
+    {
+      "epoch": 5,
+      "mean_loss_nats": 1.8348496863070656
+    },
+    {
+      "epoch": 6,
+      "mean_loss_nats": 1.8172613873201258
+    }
+  ]
+}

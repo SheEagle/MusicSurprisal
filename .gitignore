@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.py[cod]
+.tmp/
+/output/formal_dcml_jtc_all_rq/*.csv
+/output/formal_dcml_jtc_all_rq/*.json

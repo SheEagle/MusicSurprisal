@@ -76,6 +76,14 @@ differs systematically across harmonic functions and chord-tone status.
   Are chord tones and non-chord tones different? How much mutual information
   exists between pitch class and harmonic function?
 
+- `rq3_lstm_harmony_analysis.py`  
+  Optional neural-model extension for RQ3. It trains three long-context models
+  on DCML: Model A melody-only LSTM, Model B melody plus current harmonic
+  function, and Model C melody plus harmonic-function history sequence. This
+  tests whether the original negative n-gram result was caused by n-gram
+  sparsity and short context rather than by harmony being musically irrelevant.
+  Requires PyTorch.
+
 - `rq4_ai_detection_analysis.py`  
   Main RQ4 human-vs-AI feature extraction and classification analysis using
   human-trained surprisal time series.
@@ -178,6 +186,23 @@ output/formal_dcml_jtc_all_rq/dcml_period_rq3_distribution/
 This is now the primary RQ3 analysis. The previous direct
 `melody+harmony-conditioned` n-gram attempt was removed because raw chord labels
 created severe sparsity and answered the wrong question.
+
+Optional neural extension:
+
+```powershell
+python -m pip install torch
+python scripts\rq3_lstm_harmony_analysis.py
+```
+
+This trains Model A/B/C:
+
+- Model A: melody-only LSTM.
+- Model B: melody plus current `T/D/S/other`.
+- Model C: melody plus `T/D/S/other` history sequence.
+
+Use it as a model-checking extension: if Model C improves over Model A and B,
+the result supports the stronger claim that harmonic progression shapes melodic
+expectation beyond the current chord label alone.
 
 ### 5. RQ4: human vs AI analysis
 
