@@ -62,3 +62,10 @@ $ltmPlainDat = Get-ChildItem "$Root/output/idyom_cocopops_melody/ltm_plain/origi
   --output "$Root/output/idyom_cocopops_melody/cocopops_recurrence_gain_windows.csv"
 
 & $Python "$Root/scripts/pop_music_idyom_pipeline.py"
+
+& $Python "$Root/scripts/pop_section_form_prediction.py" `
+  --events "$Root/data/events_cocopops_pop.csv" `
+  --output-dir "$Root/output/pop_music_idyom_pipeline/section_form_prediction" `
+  --folds 5 `
+  --max-order 4 `
+  --alpha 0.1

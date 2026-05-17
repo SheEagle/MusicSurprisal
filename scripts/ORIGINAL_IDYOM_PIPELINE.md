@@ -175,6 +175,14 @@ Popular music, from raw CoCoPops files to final reports:
 powershell -ExecutionPolicy Bypass -File D:/music/scripts/run_pop_complete_pipeline.ps1
 ```
 
+This also runs the section-level formal prediction experiment:
+
+```text
+section labels -> 5-fold variable-order form model
+-> IC(chorus return) vs IC(verse return)
+-> output/pop_music_idyom_pipeline/section_form_prediction/
+```
+
 Classical melody/cadence analysis, from raw DCML files to final reports:
 
 ```powershell
