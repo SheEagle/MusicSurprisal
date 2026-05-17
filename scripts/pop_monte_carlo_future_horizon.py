@@ -13,7 +13,7 @@ import numpy as np
 from scipy import stats
 
 
-BINS = [round(i / 10, 1) for i in range(1, 11)]
+DEFAULT_BINS = [round(i / 10, 1) for i in range(1, 11)]
 START = "<s>"
 
 
@@ -179,7 +179,14 @@ def main() -> None:
     parser.add_argument("--incipit-notes", type=int, default=4)
     parser.add_argument("--rollouts", type=int, default=100)
     parser.add_argument("--seed", type=int, default=23)
+    parser.add_argument(
+        "--horizons",
+        default="",
+        help="Comma-separated fixed note horizons before C2, e.g. 1,2,4,8. If omitted, use proportional bins in the previous section.",
+    )
     args = parser.parse_args()
+    args.horizon_values = parse_horizons(args.horizons)
+    args.timepoint_label = "Horizon" if args.horizon_values else "Bin"
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -197,7 +204,7 @@ def main() -> None:
     write_csv(output_dir / "future_horizon_onset_tests.csv", onset_tests)
     relative_summary = summarize_relative(scores)
     write_csv(output_dir / "future_horizon_relative_summary.csv", relative_summary)
-    plot_raw(raw_summary, onset_tests, output_dir / "future_horizon_raw_c2_ic.svg", output_dir / "future_horizon_raw_c2_ic.png")
+    plot_raw(raw_summary, onset_tests, output_dir / "future_horizon_raw_c2_ic.svg", output_dir / "future_horizon_raw_c2_ic.png", args)
     plot_relative(relative_summary, output_dir / "future_horizon_relative_ic.svg", output_dir / "future_horizon_relative_ic.png")
     write_report(output_dir / "MONTE_CARLO_FUTURE_HORIZON_REPORT.md", songs, raw_summary, slope_tests, onset_tests, relative_summary, args)
     print(f"Wrote Monte Carlo future-horizon outputs to {output_dir}")
@@ -283,10 +290,7 @@ def score_song(song: dict, model: CpitchVOM, args: argparse.Namespace, rng: np.r
         "other_song_c2": song["other_song_c2_target"],
         "shuffled_c2": song["shuffled_c2_target"],
     }
-    for bin_value in BINS:
-        within = max(1, min(previous_len, math.ceil(previous_len * bin_value)))
-        tau = song["previous_start"] + within
-        horizon = max(0, song["c2_start"] - tau)
+    for bin_value, tau, horizon in iter_scoring_points(song, previous_len, args):
         context = song["cpitch"][:tau]
         final_states = model.sample_final_state_counts(context, horizon, args.rollouts, rng)
         for target_type, target in targets.items():
@@ -306,12 +310,29 @@ def score_song(song: dict, model: CpitchVOM, args: argparse.Namespace, rng: np.r
     return rows
 
 
+def iter_scoring_points(song: dict, previous_len: int, args: argparse.Namespace) -> list[tuple[float, int, int]]:
+    points = []
+    if args.horizon_values:
+        for horizon in sorted(args.horizon_values, reverse=True):
+            tau = song["c2_start"] - horizon
+            if tau < song["previous_start"] or tau < 1:
+                continue
+            points.append((float(horizon), tau, horizon))
+        return points
+    for bin_value in DEFAULT_BINS:
+        within = max(1, min(previous_len, math.ceil(previous_len * bin_value)))
+        tau = song["previous_start"] + within
+        horizon = max(0, song["c2_start"] - tau)
+        points.append((bin_value, tau, horizon))
+    return points
+
+
 def summarize_raw(rows: list[FutureScore]) -> list[dict[str, object]]:
     actual = [row for row in rows if row.target_type == "actual_c2"]
     out = []
     for source in sorted({row.source for row in actual} | {"ALL"}):
         source_rows = actual if source == "ALL" else [row for row in actual if row.source == source]
-        for bin_value in BINS:
+        for bin_value in row_timepoints(source_rows):
             subset = [row for row in source_rows if row.bin == bin_value]
             if len(subset) < 2:
                 continue
@@ -343,7 +364,7 @@ def slope_tests_raw(rows: list[FutureScore]) -> list[dict[str, object]]:
         for song_rows in by_song.values():
             if len(song_rows) < 3:
                 continue
-            x = np.array([row.bin for row in song_rows], dtype=float)
+            x = np.array([row.notes_before_c2 for row in song_rows], dtype=float)
             y = np.array([row.future_ic for row in song_rows], dtype=float)
             slopes.append(float(np.polyfit(x, y, 1)[0]))
         if len(slopes) < 2:
@@ -354,7 +375,7 @@ def slope_tests_raw(rows: list[FutureScore]) -> list[dict[str, object]]:
         out.append({
             "source": source,
             "n_songs": len(values),
-            "mean_slope_future_ic_per_bin": values.mean(),
+            "mean_slope_future_ic_per_note_before": values.mean(),
             "ci95_low": lo,
             "ci95_high": hi,
             "t": t,
@@ -366,20 +387,26 @@ def slope_tests_raw(rows: list[FutureScore]) -> list[dict[str, object]]:
 def onset_tests_raw(rows: list[FutureScore]) -> list[dict[str, object]]:
     actual = [row for row in rows if row.target_type == "actual_c2"]
     out = []
+    all_timepoints = row_timepoints(actual)
+    horizon_mode = all_timepoints and max(all_timepoints) > 1.0
+    if horizon_mode:
+        baseline_points = sorted(all_timepoints, reverse=True)[:2]
+        candidate_points = [point for point in sorted(all_timepoints, reverse=True) if point not in baseline_points]
+    else:
+        baseline_points = [0.1, 0.2]
+        candidate_points = [point for point in sorted(all_timepoints) if point > 0.2]
     for source in sorted({row.source for row in actual} | {"ALL"}):
         source_rows = actual if source == "ALL" else [row for row in actual if row.source == source]
         by_song: dict[str, dict[float, FutureScore]] = defaultdict(dict)
         for row in source_rows:
             by_song[row.piece_id][row.bin] = row
-        for bin_value in BINS:
-            if bin_value < 0.3:
-                continue
+        for bin_value in candidate_points:
             effects = []
             notes_before = []
             for song_bins in by_song.values():
-                if 0.1 not in song_bins or 0.2 not in song_bins or bin_value not in song_bins:
+                if bin_value not in song_bins or any(point not in song_bins for point in baseline_points):
                     continue
-                baseline = (song_bins[0.1].future_ic + song_bins[0.2].future_ic) / 2.0
+                baseline = sum(song_bins[point].future_ic for point in baseline_points) / len(baseline_points)
                 effects.append(baseline - song_bins[bin_value].future_ic)
                 notes_before.append(song_bins[bin_value].notes_before_c2)
             if len(effects) < 2:
@@ -401,7 +428,11 @@ def onset_tests_raw(rows: list[FutureScore]) -> list[dict[str, object]]:
                 "sustained_onset": 0,
             })
     for source in sorted({row["source"] for row in out}):
-        subset = sorted([row for row in out if row["source"] == source], key=lambda row: row["bin"])
+        subset = sorted(
+            [row for row in out if row["source"] == source],
+            key=lambda row: row["bin"],
+            reverse=horizon_mode,
+        )
         for idx, row in enumerate(subset):
             if (
                 row["mean_early_baseline_minus_current_future_ic"] > 0
@@ -439,7 +470,7 @@ def summarize_relative(rows: list[FutureScore]) -> list[dict[str, object]]:
     for source in sorted({row["source"] for row in paired} | {"ALL"}):
         source_rows = paired if source == "ALL" else [row for row in paired if row["source"] == source]
         for baseline in ["v2_opening", "other_song_c2", "shuffled_c2"]:
-            for bin_value in BINS:
+            for bin_value in sorted({row["bin"] for row in source_rows if row["baseline"] == baseline}):
                 subset = [row for row in source_rows if row["baseline"] == baseline and row["bin"] == bin_value]
                 if len(subset) < 2:
                     continue
@@ -467,7 +498,13 @@ def summarize_relative(rows: list[FutureScore]) -> list[dict[str, object]]:
     return out
 
 
-def plot_raw(summary: list[dict[str, object]], onset_rows: list[dict[str, object]], svg_path: Path, png_path: Path) -> None:
+def plot_raw(
+    summary: list[dict[str, object]],
+    onset_rows: list[dict[str, object]],
+    svg_path: Path,
+    png_path: Path,
+    args: argparse.Namespace,
+) -> None:
     rows = sorted([row for row in summary if row["source"] == "ALL"], key=lambda row: row["bin"])
     x = np.array([row["mean_notes_before_c2"] for row in rows], dtype=float)
     y = np.array([row["mean_future_ic_actual_c2"] for row in rows], dtype=float)
@@ -479,7 +516,8 @@ def plot_raw(summary: list[dict[str, object]], onset_rows: list[dict[str, object
     onset = next((row for row in onset_rows if row["source"] == "ALL" and row["sustained_onset"]), None)
     if onset:
         ax.axvline(onset["mean_notes_before_c2"], color="#D62728", lw=1.4, ls="--")
-        ax.text(onset["mean_notes_before_c2"], max(hi), f"onset {onset['bin']:.1f}", color="#D62728", ha="right", va="top")
+        label = f"onset {int(onset['bin'])} notes" if args.horizon_values else f"onset {onset['bin']:.1f}"
+        ax.text(onset["mean_notes_before_c2"], max(hi), label, color="#D62728", ha="right", va="top")
     ax.invert_xaxis()
     ax.set_xlabel("Mean notes before C2 onset")
     ax.set_ylabel("Future IC of actual C2 opening (bits)")
@@ -535,22 +573,23 @@ def write_report(
         f"- Max order: {args.max_order}",
         f"- Incipit length: {args.incipit_notes} cpitch events",
         f"- Rollouts: {args.rollouts}",
+        f"- Timepoints: fixed horizons {', '.join(map(str, args.horizon_values))} notes before C2" if args.horizon_values else "- Timepoints: proportional bins 10%-100% of the section before C2",
         "",
         "## Raw Future IC Slope",
         "",
-        "| Source | N songs | Mean slope [95% CI] | p |",
+        "| Source | N songs | Mean slope per note before C2 [95% CI] | p |",
         "|---|---:|---:|---:|",
     ]
     for row in slope_rows:
         lines.append(
             f"| {row['source']} | {row['n_songs']} | "
-            f"{fmt(row['mean_slope_future_ic_per_bin'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | {fmt_p(row['p'])} |"
+            f"{fmt(row['mean_slope_future_ic_per_note_before'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | {fmt_p(row['p'])} |"
         )
     lines.extend([
         "",
         "## Raw Future IC Onset",
         "",
-        "| Source | Bin | Notes before C2 | Baseline - current future IC [95% CI] | p | Onset |",
+        f"| Source | {args.timepoint_label} | Notes before C2 | Baseline - current future IC [95% CI] | p | Onset |",
         "|---|---:|---:|---:|---:|---:|",
     ])
     for row in onset_rows:
@@ -563,7 +602,7 @@ def write_report(
         "",
         "## Relative Future IC, All Songs",
         "",
-        "| Baseline | Bin | N | Actual C2 future IC | Baseline future IC | Effect [95% CI] | p |",
+        f"| Baseline | {args.timepoint_label} | N | Actual C2 future IC | Baseline future IC | Effect [95% CI] | p |",
         "|---|---:|---:|---:|---:|---:|---:|",
     ])
     for row in relative_rows:
@@ -574,24 +613,28 @@ def write_report(
             f"{fmt(row['mean_actual_c2_future_ic'])} | {fmt(row['mean_baseline_future_ic'])} | "
             f"{fmt(row['mean_baseline_minus_actual_future_ic'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | {fmt_p(row['p'])} |"
         )
-    lines.extend(["", "## Headline", "", future_headline(slope_rows, onset_rows, relative_rows)])
+    lines.extend(["", "## Headline", "", future_headline(slope_rows, onset_rows, relative_rows, bool(args.horizon_values))])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def future_headline(slope_rows: list[dict], onset_rows: list[dict], relative_rows: list[dict]) -> str:
+def future_headline(slope_rows: list[dict], onset_rows: list[dict], relative_rows: list[dict], horizon_mode: bool) -> str:
     slope = next((row for row in slope_rows if row["source"] == "ALL"), None)
     onset = next((row for row in onset_rows if row["source"] == "ALL" and row["sustained_onset"]), None)
     parts = []
     if slope:
-        direction = "decreases" if slope["mean_slope_future_ic_per_bin"] < 0 else "does not decrease"
-        parts.append(f"Raw future IC {direction}: slope {fmt(slope['mean_slope_future_ic_per_bin'])}, p = {fmt_p(slope['p'])}.")
+        direction = "gets lower closer to C2" if slope["mean_slope_future_ic_per_note_before"] > 0 else "does not get lower closer to C2"
+        parts.append(
+            f"Raw future IC {direction}: slope {fmt(slope['mean_slope_future_ic_per_note_before'])} per note before C2, p = {fmt_p(slope['p'])}."
+        )
     if onset:
-        parts.append(f"Sustained onset: bin {onset['bin']:.1f}, about {fmt(onset['mean_notes_before_c2'])} notes before C2.")
+        label = f"horizon {int(onset['bin'])}" if horizon_mode else f"bin {onset['bin']:.1f}"
+        parts.append(f"Sustained onset: {label}, about {fmt(onset['mean_notes_before_c2'])} notes before C2.")
     else:
-        parts.append("No sustained raw future-IC onset under the 10/20% baseline criterion.")
+        baseline = "8/4-note horizon baseline" if horizon_mode else "10/20% baseline criterion"
+        parts.append(f"No sustained raw future-IC onset under the {baseline}.")
     rel = [row for row in relative_rows if row["source"] == "ALL"]
     for baseline in ["other_song_c2", "shuffled_c2", "v2_opening"]:
-        subset = sorted([row for row in rel if row["baseline"] == baseline], key=lambda row: row["bin"])
+        subset = sorted([row for row in rel if row["baseline"] == baseline], key=lambda row: row["bin"], reverse=horizon_mode)
         sustained = [
             row for idx, row in enumerate(subset)
             if row["mean_baseline_minus_actual_future_ic"] > 0
@@ -599,7 +642,8 @@ def future_headline(slope_rows: list[dict], onset_rows: list[dict], relative_row
             and all(later["mean_baseline_minus_actual_future_ic"] > 0 and later["p"] < 0.05 for later in subset[idx:])
         ]
         if sustained:
-            parts.append(f"`{baseline}`: actual C2 advantage from bin {sustained[0]['bin']:.1f}.")
+            label = f"horizon {int(sustained[0]['bin'])}" if horizon_mode else f"bin {sustained[0]['bin']:.1f}"
+            parts.append(f"`{baseline}`: actual C2 advantage from {label}.")
         else:
             parts.append(f"`{baseline}`: no sustained actual C2 advantage.")
     return " ".join(parts)
@@ -632,6 +676,19 @@ def previous_segment(segments: list[dict], target: dict) -> dict | None:
             break
         previous = segment
     return previous
+
+
+def parse_horizons(value: str) -> list[int]:
+    if not value.strip():
+        return []
+    horizons = sorted({int(item.strip()) for item in value.split(",") if item.strip()})
+    if any(horizon <= 0 for horizon in horizons):
+        raise ValueError("--horizons must contain positive integers")
+    return horizons
+
+
+def row_timepoints(rows: list[FutureScore]) -> list[float]:
+    return sorted({row.bin for row in rows})
 
 
 def assign_folds(songs: list[dict], folds: int, seed: int) -> None:

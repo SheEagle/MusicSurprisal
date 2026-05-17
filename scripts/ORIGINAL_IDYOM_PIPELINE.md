@@ -206,6 +206,18 @@ rollouts per song/bin so the full run finishes on a local machine; pass
 `--rollouts 1000` to `pop_monte_carlo_future_horizon.py` for a slower,
 higher-precision Monte Carlo run.
 
+For the main Monte Carlo run in `run_pop_complete_pipeline.ps1`, the analysis is
+restricted to short fixed horizons and uses 100 rollouts per song/horizon:
+
+```text
+C2 - 8 notes, C2 - 4 notes, C2 - 2 notes, C2 - 1 note
+-> output/pop_music_idyom_pipeline/monte_carlo_short_horizon/
+```
+
+This avoids asking the sampler to generate 40+ intervening notes before scoring
+the C2 incipit, where rollout paths drift too far from the observed lead-in.
+Raise `--rollouts` manually for a slower precision check.
+
 Classical melody/cadence analysis, from raw DCML files to final reports:
 
 ```powershell
