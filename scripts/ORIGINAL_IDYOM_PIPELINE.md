@@ -192,6 +192,20 @@ notes before C2 -> 5-fold variable-order note model
 -> output/pop_music_idyom_pipeline/note_chorus_anticipation/
 ```
 
+Finally, it runs a cpitch-only Monte Carlo future-horizon analysis using a
+lightweight Python variable-order Markov model:
+
+```text
+pre-C2 context -> sample intervening cpitch paths to true C2 horizon
+-> score actual C2 cpitch incipit after each sampled path
+-> output/pop_music_idyom_pipeline/monte_carlo_future_horizon/
+```
+
+This last step intentionally does not call IDyOM. The default pipeline uses 100
+rollouts per song/bin so the full run finishes on a local machine; pass
+`--rollouts 1000` to `pop_monte_carlo_future_horizon.py` for a slower,
+higher-precision Monte Carlo run.
+
 Classical melody/cadence analysis, from raw DCML files to final reports:
 
 ```powershell
