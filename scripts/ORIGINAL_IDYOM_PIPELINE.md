@@ -167,6 +167,23 @@ python D:/music/scripts/summarize_original_idyom_dat.py `
 
 ## 4. Run final analysis
 
+End-to-end wrappers are available for the two current paper pipelines.
+
+Popular music, from raw CoCoPops files to final reports:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:/music/scripts/run_pop_complete_pipeline.ps1
+```
+
+Classical melody/cadence analysis, from raw DCML files to final reports:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:/music/scripts/run_classical_complete_pipeline.ps1
+```
+
+Use `-SkipIdyom` only for debugging when the `.dat` files already exist and only
+the post-IDyOM conversion/analysis layers need to be regenerated.
+
 Popular music:
 
 ```powershell
