@@ -31,6 +31,7 @@ class ScoreRow:
     probability: float
     entropy: float
     context_note_count: int
+    notes_before_c2: int
     target_note_count: int
 
 
@@ -106,11 +107,18 @@ def main() -> None:
     assign_folds(songs, args.folds, args.seed)
     rows = run_predictions(songs, args)
     write_csv(output_dir / "note_chorus_anticipation_scores.csv", [row.__dict__ for row in rows])
+    raw_summary = summarize_raw_actual(rows)
+    write_csv(output_dir / "raw_actual_c2_ic_summary.csv", raw_summary)
+    slope_tests = raw_ic_slope_tests(rows)
+    write_csv(output_dir / "raw_ic_slope_tests.csv", slope_tests)
+    onset_tests = detect_onsets(rows)
+    write_csv(output_dir / "anticipation_onset_tests.csv", onset_tests)
     summary = summarize(rows)
     write_csv(output_dir / "note_chorus_anticipation_summary.csv", summary)
     write_song_metadata(output_dir / "note_chorus_anticipation_song_metadata.csv", songs)
-    plot_summary(summary, output_dir / "note_chorus_anticipation_curve.svg", output_dir / "note_chorus_anticipation_curve.png")
-    write_report(output_dir / "NOTE_CHORUS_ANTICIPATION_REPORT.md", songs, summary, args)
+    plot_raw_ic(raw_summary, onset_tests, output_dir / "raw_c2_ic_timecourse.svg", output_dir / "raw_c2_ic_timecourse.png")
+    plot_relative_ic(summary, output_dir / "relative_c2_ic_timecourse.svg", output_dir / "relative_c2_ic_timecourse.png")
+    write_report(output_dir / "NOTE_CHORUS_ANTICIPATION_REPORT.md", songs, raw_summary, slope_tests, onset_tests, summary, args)
     print(f"Wrote note-level chorus anticipation outputs to {output_dir}")
 
 
@@ -216,6 +224,7 @@ def score_song(song: dict, ltm: NoteMarkov, vocab: set[int], args: argparse.Name
         within = max(1, min(previous_len, math.ceil(previous_len * bin_value)))
         context_end = song["previous_start"] + within
         context = song["notes"][:context_end]
+        notes_before_c2 = max(1, song["c2_start"] - context_end + 1)
         stm = NoteMarkov(args.max_order, args.alpha, vocab).fit([context])
         for target_type, target in targets.items():
             ltm_ic, ltm_probability, ltm_entropy = ltm.score_sequence(target, context)
@@ -239,6 +248,7 @@ def score_song(song: dict, ltm: NoteMarkov, vocab: set[int], args: argparse.Name
                     probability=probability,
                     entropy=ent,
                     context_note_count=len(context),
+                    notes_before_c2=notes_before_c2,
                     target_note_count=len(target),
                 ))
     return out
@@ -291,6 +301,7 @@ def summarize(rows: list[ScoreRow]) -> list[dict[str, object]]:
                 "actual_ic": actual.mean_ic,
                 "baseline_ic": values[baseline].mean_ic,
                 "baseline_minus_actual_ic": values[baseline].mean_ic - actual.mean_ic,
+                "notes_before_c2": actual.notes_before_c2,
             })
 
     out = []
@@ -308,6 +319,7 @@ def summarize(rows: list[ScoreRow]) -> list[dict[str, object]]:
                     effects = np.array([row["baseline_minus_actual_ic"] for row in subset], dtype=float)
                     actual = np.array([row["actual_ic"] for row in subset], dtype=float)
                     baseline_ic = np.array([row["baseline_ic"] for row in subset], dtype=float)
+                    notes_before = np.array([row["notes_before_c2"] for row in subset], dtype=float)
                     se = effects.std(ddof=1) / math.sqrt(len(effects))
                     tcrit = stats.t.ppf(0.975, len(effects) - 1)
                     t, p = stats.ttest_1samp(effects, 0.0)
@@ -317,6 +329,8 @@ def summarize(rows: list[ScoreRow]) -> list[dict[str, object]]:
                         "baseline": baseline,
                         "bin": bin_value,
                         "n_songs": len(effects),
+                        "mean_notes_before_c2": notes_before.mean(),
+                        "median_notes_before_c2": float(np.median(notes_before)),
                         "mean_actual_c2_ic": actual.mean(),
                         "mean_baseline_ic": baseline_ic.mean(),
                         "mean_baseline_minus_actual_ic": effects.mean(),
@@ -328,24 +342,175 @@ def summarize(rows: list[ScoreRow]) -> list[dict[str, object]]:
     return out
 
 
-def plot_summary(summary: list[dict[str, object]], svg_path: Path, png_path: Path) -> None:
+def summarize_raw_actual(rows: list[ScoreRow]) -> list[dict[str, object]]:
+    actual = [row for row in rows if row.target_type == "actual_c2"]
+    out = []
+    for source in sorted({row.source for row in actual} | {"ALL"}):
+        source_rows = actual if source == "ALL" else [row for row in actual if row.source == source]
+        for model in ["LTM", "STM", "BOTH"]:
+            for bin_value in BINS:
+                subset = [row for row in source_rows if row.model == model and row.bin == bin_value]
+                if len(subset) < 2:
+                    continue
+                values = np.array([row.mean_ic for row in subset], dtype=float)
+                notes_before = np.array([row.notes_before_c2 for row in subset], dtype=float)
+                se = values.std(ddof=1) / math.sqrt(len(values))
+                tcrit = stats.t.ppf(0.975, len(values) - 1)
+                out.append({
+                    "source": source,
+                    "model": model,
+                    "bin": bin_value,
+                    "n_songs": len(values),
+                    "mean_notes_before_c2": notes_before.mean(),
+                    "median_notes_before_c2": float(np.median(notes_before)),
+                    "mean_actual_c2_ic": values.mean(),
+                    "ci95_low": values.mean() - tcrit * se,
+                    "ci95_high": values.mean() + tcrit * se,
+                })
+    return out
+
+
+def raw_ic_slope_tests(rows: list[ScoreRow]) -> list[dict[str, object]]:
+    actual = [row for row in rows if row.target_type == "actual_c2"]
+    out = []
+    for source in sorted({row.source for row in actual} | {"ALL"}):
+        source_rows = actual if source == "ALL" else [row for row in actual if row.source == source]
+        for model in ["LTM", "STM", "BOTH"]:
+            by_song: dict[str, list[ScoreRow]] = defaultdict(list)
+            for row in source_rows:
+                if row.model == model:
+                    by_song[row.piece_id].append(row)
+            slopes = []
+            for song_rows in by_song.values():
+                if len(song_rows) < 3:
+                    continue
+                x = np.array([row.bin for row in song_rows], dtype=float)
+                y = np.array([row.mean_ic for row in song_rows], dtype=float)
+                slopes.append(float(np.polyfit(x, y, 1)[0]))
+            if len(slopes) < 2:
+                continue
+            values = np.array(slopes, dtype=float)
+            se = values.std(ddof=1) / math.sqrt(len(values))
+            tcrit = stats.t.ppf(0.975, len(values) - 1)
+            t, p = stats.ttest_1samp(values, 0.0)
+            out.append({
+                "source": source,
+                "model": model,
+                "n_songs": len(values),
+                "mean_slope_ic_per_bin": values.mean(),
+                "ci95_low": values.mean() - tcrit * se,
+                "ci95_high": values.mean() + tcrit * se,
+                "t": t,
+                "p": p,
+            })
+    return out
+
+
+def detect_onsets(rows: list[ScoreRow]) -> list[dict[str, object]]:
+    actual = [row for row in rows if row.target_type == "actual_c2"]
+    test_rows = []
+    for source in sorted({row.source for row in actual} | {"ALL"}):
+        source_rows = actual if source == "ALL" else [row for row in actual if row.source == source]
+        for model in ["LTM", "STM", "BOTH"]:
+            by_song: dict[str, dict[float, ScoreRow]] = defaultdict(dict)
+            for row in source_rows:
+                if row.model == model:
+                    by_song[row.piece_id][row.bin] = row
+            for bin_value in BINS:
+                if bin_value < 0.3:
+                    continue
+                effects = []
+                notes_before = []
+                for song_bins in by_song.values():
+                    if 0.1 not in song_bins or 0.2 not in song_bins or bin_value not in song_bins:
+                        continue
+                    baseline = (song_bins[0.1].mean_ic + song_bins[0.2].mean_ic) / 2.0
+                    current = song_bins[bin_value].mean_ic
+                    effects.append(baseline - current)
+                    notes_before.append(song_bins[bin_value].notes_before_c2)
+                if len(effects) < 2:
+                    continue
+                values = np.array(effects, dtype=float)
+                se = values.std(ddof=1) / math.sqrt(len(values))
+                tcrit = stats.t.ppf(0.975, len(values) - 1)
+                t, p = stats.ttest_1samp(values, 0.0)
+                test_rows.append({
+                    "source": source,
+                    "model": model,
+                    "bin": bin_value,
+                    "n_songs": len(values),
+                    "mean_notes_before_c2": float(np.mean(notes_before)),
+                    "median_notes_before_c2": float(np.median(notes_before)),
+                    "mean_early_baseline_minus_current_ic": values.mean(),
+                    "ci95_low": values.mean() - tcrit * se,
+                    "ci95_high": values.mean() + tcrit * se,
+                    "t": t,
+                    "p": p,
+                    "sustained_onset": 0,
+                })
+
+    for source in sorted({row["source"] for row in test_rows}):
+        for model in ["LTM", "STM", "BOTH"]:
+            subset = sorted([row for row in test_rows if row["source"] == source and row["model"] == model], key=lambda row: row["bin"])
+            for idx, row in enumerate(subset):
+                if (
+                    row["mean_early_baseline_minus_current_ic"] > 0
+                    and row["p"] < 0.05
+                    and all(later["mean_early_baseline_minus_current_ic"] > 0 and later["p"] < 0.05 for later in subset[idx:])
+                ):
+                    row["sustained_onset"] = 1
+                    break
+    return test_rows
+
+
+def plot_raw_ic(summary: list[dict[str, object]], onset_rows: list[dict[str, object]], svg_path: Path, png_path: Path) -> None:
+    rows = sorted(
+        [row for row in summary if row["source"] == "ALL" and row["model"] == "BOTH"],
+        key=lambda row: row["bin"],
+    )
+    fig, ax = plt.subplots(figsize=(7.5, 4.3))
+    x = np.array([row["mean_notes_before_c2"] for row in rows], dtype=float)
+    y = np.array([row["mean_actual_c2_ic"] for row in rows], dtype=float)
+    lo = np.array([row["ci95_low"] for row in rows], dtype=float)
+    hi = np.array([row["ci95_high"] for row in rows], dtype=float)
+    ax.plot(x, y, marker="o", lw=2, color="#4C78A8")
+    ax.fill_between(x, lo, hi, color="#4C78A8", alpha=0.18, linewidth=0)
+    onset = next(
+        (row for row in onset_rows if row["source"] == "ALL" and row["model"] == "BOTH" and row["sustained_onset"]),
+        None,
+    )
+    if onset:
+        ax.axvline(onset["mean_notes_before_c2"], color="#D62728", lw=1.4, ls="--")
+        ax.text(onset["mean_notes_before_c2"], max(hi), f"onset {onset['bin']:.1f}", color="#D62728", ha="right", va="top")
+    ax.invert_xaxis()
+    ax.set_xlabel("Mean notes before C2 onset")
+    ax.set_ylabel("IC of actual C2 opening (bits)")
+    ax.spines[["top", "right"]].set_visible(False)
+    fig.tight_layout()
+    fig.savefig(svg_path)
+    fig.savefig(png_path, dpi=220)
+    plt.close(fig)
+
+
+def plot_relative_ic(summary: list[dict[str, object]], svg_path: Path, png_path: Path) -> None:
     rows = [
         row for row in summary
-        if row["source"] == "ALL" and row["model"] == "BOTH" and row["baseline"] in {"other_song_c2", "shuffled_c2"}
+        if row["source"] == "ALL" and row["model"] == "BOTH"
     ]
     fig, ax = plt.subplots(figsize=(7.5, 4.3))
-    labels = {"other_song_c2": "Other-song chorus", "shuffled_c2": "Shuffled C2"}
-    colors = {"other_song_c2": "#4C78A8", "shuffled_c2": "#F58518"}
-    for baseline in ["other_song_c2", "shuffled_c2"]:
+    labels = {"other_song_c2": "Other-song chorus", "shuffled_c2": "Shuffled C2", "v2_opening": "V2 opening"}
+    colors = {"other_song_c2": "#4C78A8", "shuffled_c2": "#F58518", "v2_opening": "#54A24B"}
+    for baseline in ["other_song_c2", "shuffled_c2", "v2_opening"]:
         items = sorted([row for row in rows if row["baseline"] == baseline], key=lambda row: row["bin"])
-        x = np.array([row["bin"] for row in items], dtype=float)
+        x = np.array([row["mean_notes_before_c2"] for row in items], dtype=float)
         y = np.array([row["mean_baseline_minus_actual_ic"] for row in items], dtype=float)
         lo = np.array([row["ci95_low"] for row in items], dtype=float)
         hi = np.array([row["ci95_high"] for row in items], dtype=float)
         ax.plot(x, y, marker="o", lw=2, label=labels[baseline], color=colors[baseline])
         ax.fill_between(x, lo, hi, color=colors[baseline], alpha=0.18, linewidth=0)
     ax.axhline(0, color="#555555", lw=1)
-    ax.set_xlabel("Position through the section before C2")
+    ax.invert_xaxis()
+    ax.set_xlabel("Mean notes before C2 onset")
     ax.set_ylabel("Baseline IC - actual C2 opening IC (bits)")
     ax.text(0.02, 0.96, "Positive = actual C2 opening is more plausible", transform=ax.transAxes, va="top")
     ax.spines[["top", "right"]].set_visible(False)
@@ -356,7 +521,15 @@ def plot_summary(summary: list[dict[str, object]], svg_path: Path, png_path: Pat
     plt.close(fig)
 
 
-def write_report(path: Path, songs: list[dict], summary: list[dict], args: argparse.Namespace) -> None:
+def write_report(
+    path: Path,
+    songs: list[dict],
+    raw_summary: list[dict],
+    slope_tests: list[dict],
+    onset_tests: list[dict],
+    summary: list[dict],
+    args: argparse.Namespace,
+) -> None:
     lines = [
         "# Note-Level Chorus Incipit Anticipation",
         "",
@@ -367,13 +540,43 @@ def write_report(path: Path, songs: list[dict], summary: list[dict], args: argpa
         f"- Max order: {args.max_order}",
         f"- Incipit length: {args.incipit_notes} notes",
         "",
+        "## Raw C2 IC Slope",
+        "",
+        "| Source | Model | N songs | Mean slope [95% CI] | p |",
+        "|---|---|---:|---:|---:|",
+    ]
+    for row in slope_tests:
+        lines.append(
+            f"| {row['source']} | {row['model']} | {row['n_songs']} | "
+            f"{fmt(row['mean_slope_ic_per_bin'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | {fmt_p(row['p'])} |"
+        )
+    lines.extend([
+        "",
+        "Negative slope means the actual C2 opening becomes less surprising as the preceding section approaches C2.",
+        "",
+        "## Raw C2 IC Onset",
+        "",
+        "Early baseline is the mean of the 10% and 20% bins. Positive values mean the current bin has lower IC than the early-section baseline.",
+        "",
+        "| Source | Model | Bin | Notes before C2 | Baseline - current IC [95% CI] | p | Onset |",
+        "|---|---|---:|---:|---:|---:|---:|",
+    ])
+    for row in onset_tests:
+        lines.append(
+            f"| {row['source']} | {row['model']} | {row['bin']:.1f} | "
+            f"{fmt(row['mean_notes_before_c2'])} | "
+            f"{fmt(row['mean_early_baseline_minus_current_ic'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | "
+            f"{fmt_p(row['p'])} | {row['sustained_onset']} |"
+        )
+    lines.extend([
+        "",
         "The effect is `baseline IC - actual C2 opening IC`; positive values mean the actual C2 opening is more probable than the matched baseline.",
         "",
         "## BOTH Model, All Songs",
         "",
         "| Baseline | Bin | N | Actual C2 IC | Baseline IC | Effect [95% CI] | p |",
         "|---|---:|---:|---:|---:|---:|---:|",
-    ]
+    ])
     for row in summary:
         if row["source"] == "ALL" and row["model"] == "BOTH":
             lines.append(
@@ -385,14 +588,33 @@ def write_report(path: Path, songs: list[dict], summary: list[dict], args: argpa
         "",
         "## Headline",
         "",
-        headline(summary),
+        raw_headline(slope_tests, onset_tests),
+        "",
+        relative_headline(summary),
         "",
         "Interpretation: this is an immediate-start likelihood analysis, not a true future-horizon rollout. It estimates when the C2 incipit becomes compatible with the note-level context before the section begins.",
     ])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def headline(summary: list[dict]) -> str:
+def raw_headline(slope_tests: list[dict], onset_tests: list[dict]) -> str:
+    slope = next((row for row in slope_tests if row["source"] == "ALL" and row["model"] == "BOTH"), None)
+    onset = next((row for row in onset_tests if row["source"] == "ALL" and row["model"] == "BOTH" and row["sustained_onset"]), None)
+    parts = []
+    if slope:
+        direction = "decreases" if slope["mean_slope_ic_per_bin"] < 0 else "does not decrease"
+        parts.append(f"Raw BOTH C2 IC {direction}: slope {fmt(slope['mean_slope_ic_per_bin'])}, p = {fmt_p(slope['p'])}.")
+    if onset:
+        parts.append(
+            f"Sustained raw-IC reduction onset: bin {onset['bin']:.1f}, "
+            f"about {fmt(onset['mean_notes_before_c2'])} notes before C2."
+        )
+    else:
+        parts.append("No sustained raw-IC reduction onset under the 10/20% baseline criterion.")
+    return " ".join(parts)
+
+
+def relative_headline(summary: list[dict]) -> str:
     rows = [row for row in summary if row["source"] == "ALL" and row["model"] == "BOTH"]
     bits = []
     for baseline in ["other_song_c2", "shuffled_c2", "v2_opening"]:
