@@ -179,6 +179,7 @@ def main() -> None:
     parser.add_argument("--incipit-notes", type=int, default=4)
     parser.add_argument("--rollouts", type=int, default=100)
     parser.add_argument("--seed", type=int, default=23)
+    parser.add_argument("--raw-only", action="store_true", help="Only score the actual C2 incipit and write raw slope/onset outputs.")
     parser.add_argument(
         "--horizons",
         default="",
@@ -202,10 +203,13 @@ def main() -> None:
     write_csv(output_dir / "future_horizon_slope_tests.csv", slope_tests)
     onset_tests = onset_tests_raw(scores)
     write_csv(output_dir / "future_horizon_onset_tests.csv", onset_tests)
-    relative_summary = summarize_relative(scores)
-    write_csv(output_dir / "future_horizon_relative_summary.csv", relative_summary)
     plot_raw(raw_summary, onset_tests, output_dir / "future_horizon_raw_c2_ic.svg", output_dir / "future_horizon_raw_c2_ic.png", args)
-    plot_relative(relative_summary, output_dir / "future_horizon_relative_ic.svg", output_dir / "future_horizon_relative_ic.png")
+    if args.raw_only:
+        relative_summary = []
+    else:
+        relative_summary = summarize_relative(scores)
+        write_csv(output_dir / "future_horizon_relative_summary.csv", relative_summary)
+        plot_relative(relative_summary, output_dir / "future_horizon_relative_ic.svg", output_dir / "future_horizon_relative_ic.png")
     write_report(output_dir / "MONTE_CARLO_FUTURE_HORIZON_REPORT.md", songs, raw_summary, slope_tests, onset_tests, relative_summary, args)
     print(f"Wrote Monte Carlo future-horizon outputs to {output_dir}")
 
@@ -286,10 +290,13 @@ def score_song(song: dict, model: CpitchVOM, args: argparse.Namespace, rng: np.r
     previous_len = song["previous_end"] - song["previous_start"]
     targets = {
         "actual_c2": song["c2_target"],
-        "v2_opening": song["v2_target"],
-        "other_song_c2": song["other_song_c2_target"],
-        "shuffled_c2": song["shuffled_c2_target"],
     }
+    if not args.raw_only:
+        targets.update({
+            "v2_opening": song["v2_target"],
+            "other_song_c2": song["other_song_c2_target"],
+            "shuffled_c2": song["shuffled_c2_target"],
+        })
     for bin_value, tau, horizon in iter_scoring_points(song, previous_len, args):
         context = song["cpitch"][:tau]
         final_states = model.sample_final_state_counts(context, horizon, args.rollouts, rng)
@@ -574,6 +581,7 @@ def write_report(
         f"- Incipit length: {args.incipit_notes} cpitch events",
         f"- Rollouts: {args.rollouts}",
         f"- Timepoints: fixed horizons {', '.join(map(str, args.horizon_values))} notes before C2" if args.horizon_values else "- Timepoints: proportional bins 10%-100% of the section before C2",
+        f"- Raw only: {args.raw_only}",
         "",
         "## Raw Future IC Slope",
         "",
@@ -598,21 +606,22 @@ def write_report(
             f"{fmt(row['mean_early_baseline_minus_current_future_ic'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | "
             f"{fmt_p(row['p'])} | {row['sustained_onset']} |"
         )
-    lines.extend([
-        "",
-        "## Relative Future IC, All Songs",
-        "",
-        f"| Baseline | {args.timepoint_label} | N | Actual C2 future IC | Baseline future IC | Effect [95% CI] | p |",
-        "|---|---:|---:|---:|---:|---:|---:|",
-    ])
-    for row in relative_rows:
-        if row["source"] != "ALL":
-            continue
-        lines.append(
-            f"| {row['baseline']} | {row['bin']:.1f} | {row['n_songs']} | "
-            f"{fmt(row['mean_actual_c2_future_ic'])} | {fmt(row['mean_baseline_future_ic'])} | "
-            f"{fmt(row['mean_baseline_minus_actual_future_ic'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | {fmt_p(row['p'])} |"
-        )
+    if relative_rows:
+        lines.extend([
+            "",
+            "## Relative Future IC, All Songs",
+            "",
+            f"| Baseline | {args.timepoint_label} | N | Actual C2 future IC | Baseline future IC | Effect [95% CI] | p |",
+            "|---|---:|---:|---:|---:|---:|---:|",
+        ])
+        for row in relative_rows:
+            if row["source"] != "ALL":
+                continue
+            lines.append(
+                f"| {row['baseline']} | {row['bin']:.1f} | {row['n_songs']} | "
+                f"{fmt(row['mean_actual_c2_future_ic'])} | {fmt(row['mean_baseline_future_ic'])} | "
+                f"{fmt(row['mean_baseline_minus_actual_future_ic'])} [{fmt(row['ci95_low'])}, {fmt(row['ci95_high'])}] | {fmt_p(row['p'])} |"
+            )
     lines.extend(["", "## Headline", "", future_headline(slope_rows, onset_rows, relative_rows, bool(args.horizon_values))])
     path.write_text("\n".join(lines), encoding="utf-8")
 
@@ -632,6 +641,8 @@ def future_headline(slope_rows: list[dict], onset_rows: list[dict], relative_row
     else:
         baseline = "8/4-note horizon baseline" if horizon_mode else "10/20% baseline criterion"
         parts.append(f"No sustained raw future-IC onset under the {baseline}.")
+    if not relative_rows:
+        return " ".join(parts)
     rel = [row for row in relative_rows if row["source"] == "ALL"]
     for baseline in ["other_song_c2", "shuffled_c2", "v2_opening"]:
         subset = sorted([row for row in rel if row["baseline"] == baseline], key=lambda row: row["bin"], reverse=horizon_mode)
