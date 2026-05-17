@@ -183,6 +183,15 @@ section labels -> 5-fold variable-order form model
 -> output/pop_music_idyom_pipeline/section_form_prediction/
 ```
 
+It also runs a note-level chorus incipit anticipation analysis:
+
+```text
+notes before C2 -> 5-fold variable-order note model
+-> immediate-start likelihood of the actual C2 opening
+-> matched baselines
+-> output/pop_music_idyom_pipeline/note_chorus_anticipation/
+```
+
 Classical melody/cadence analysis, from raw DCML files to final reports:
 
 ```powershell

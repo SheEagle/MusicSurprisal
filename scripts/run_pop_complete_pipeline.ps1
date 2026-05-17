@@ -69,3 +69,11 @@ $ltmPlainDat = Get-ChildItem "$Root/output/idyom_cocopops_melody/ltm_plain/origi
   --folds 5 `
   --max-order 4 `
   --alpha 0.1
+
+& $Python "$Root/scripts/pop_note_chorus_anticipation.py" `
+  --events "$Root/data/events_cocopops_pop.csv" `
+  --output-dir "$Root/output/pop_music_idyom_pipeline/note_chorus_anticipation" `
+  --folds 5 `
+  --max-order 8 `
+  --alpha 0.1 `
+  --incipit-notes 4
