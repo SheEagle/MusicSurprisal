@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="540" viewBox="0 0 980 540">
+<style>text{font-family:Arial,Helvetica,sans-serif;fill:#111827}.title{font-size:22px;font-weight:700}.panel{font-size:20px;font-weight:700}.sub{font-size:14px;fill:#374151}.label{font-size:13px}.star{font-size:21px;font-weight:700}.axis{stroke:#6b7280;stroke-width:1.2}</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<text x="24" y="34" class="title">Mozart: boundary-aligned entropy</text>
+<line x1="72" y1="468" x2="908" y2="468" class="axis"/>
+<line x1="72" y1="72" x2="72" y2="468" class="axis"/>
+<text x="490.0" y="518" text-anchor="middle" class="label">Relative melody event</text>
+<text x="18" y="38" class="label">Entropy</text>
+<line x1="490.0" y1="72" x2="490.0" y2="468" stroke="#777" stroke-dasharray="5 5"/>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2.2"  points="72.0,173.5 211.3,166.9 350.7,175.7 490.0,182.7 629.3,122.6 768.7,107.3 908.0,141.9"/>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2.2" stroke-dasharray="7 5" points="72.0,296.1 211.3,336.1 350.7,356.6 490.0,409.8 629.3,368.9 768.7,335.1 908.0,307.4"/>
+<polyline fill="none" stroke="#2ca02c" stroke-width="2.2"  points="72.0,165.7 211.3,114.3 350.7,159.0 490.0,116.3 629.3,186.2 768.7,104.7 908.0,117.4"/>
+<polyline fill="none" stroke="#2ca02c" stroke-width="2.2" stroke-dasharray="7 5" points="72.0,290.0 211.3,291.8 350.7,299.6 490.0,286.9 629.3,270.0 768.7,268.3 908.0,233.2"/>
+<polyline fill="none" stroke="#d62728" stroke-width="2.2"  points="72.0,176.9 211.3,178.2 350.7,175.4 490.0,163.8 629.3,188.5 768.7,124.5 908.0,125.9"/>
+<polyline fill="none" stroke="#d62728" stroke-width="2.2" stroke-dasharray="7 5" points="72.0,184.3 211.3,192.4 350.7,206.4 490.0,258.7 629.3,255.9 768.7,245.4 908.0,233.2"/>
+<polyline fill="none" stroke="#ff7f0e" stroke-width="2.2"  points="72.0,148.5 211.3,150.5 350.7,165.7 490.0,186.8 629.3,162.6 768.7,96.1 908.0,156.2"/>
+<polyline fill="none" stroke="#ff7f0e" stroke-width="2.2" stroke-dasharray="7 5" points="72.0,295.7 211.3,328.1 350.7,411.1 490.0,315.0 629.3,284.7 768.7,300.0 908.0,269.5"/>
+<polyline fill="none" stroke="#9467bd" stroke-width="2.2"  points="72.0,128.9 211.3,119.5 350.7,173.2 490.0,177.3 629.3,89.9 768.7,72.0 908.0,125.3"/>
+<polyline fill="none" stroke="#9467bd" stroke-width="2.2" stroke-dasharray="7 5" points="72.0,297.4 211.3,370.6 350.7,380.3 490.0,468.0 629.3,462.7 768.7,445.1 908.0,390.0"/>
+<circle cx="810" cy="78" r="5" fill="#1f77b4"/>
+<text x="824" y="83" class="label">PAC</text>
+<circle cx="810" cy="100" r="5" fill="#2ca02c"/>
+<text x="824" y="105" class="label">IAC</text>
+<circle cx="810" cy="122" r="5" fill="#d62728"/>
+<text x="824" y="127" class="label">HC</text>
+<circle cx="810" cy="144" r="5" fill="#ff7f0e"/>
+<text x="824" y="149" class="label">DC</text>
+<circle cx="810" cy="166" r="5" fill="#9467bd"/>
+<text x="824" y="171" class="label">EC</text>
+</svg>
