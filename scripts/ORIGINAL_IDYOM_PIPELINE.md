@@ -246,6 +246,87 @@ The model never sees those labels; they are used only to summarize where pitch
 events are more or less surprising, and how much harmonic context changes that
 surprisal.
 
+### Original-IDyOM harmony-conditioned variant
+
+The Python harmony-conditioned model above is the fast analysis version. A
+closer original-IDyOM version is also supported by encoding non-pitch symbolic
+targets into IDyOM's `CPITCH` column and then using the information identity:
+
+```text
+IC(cpitch | chord, past) ~= IC(chord, cpitch | past) - IC(chord | past)
+Harmony gain = IC(cpitch-only) - IC(cpitch | chord)
+```
+
+Prepare three IDyOM sqlite databases:
+
+```powershell
+python D:/music/scripts/events_to_idyom_sqlite.py `
+  --events D:/music/data/events_cocopops_pop.csv `
+  --output D:/music/output/idyom_cocopops_harmony_conditioned/input/harmony_conditioned.sqlite `
+  --dataset-id 9201 `
+  --description cocopops_harmony_conditioned `
+  --ticks-per-quarter 96 `
+  --id-column piece_id `
+  --cpitch-mode pitch `
+  --chord-to-vertint12 `
+  --chord-map-output D:/music/output/idyom_cocopops_harmony_conditioned/chord_id_map.csv
+
+python D:/music/scripts/events_to_idyom_sqlite.py `
+  --events D:/music/data/events_cocopops_pop.csv `
+  --output D:/music/output/idyom_cocopops_harmony_conditioned/input/chord_as_cpitch.sqlite `
+  --dataset-id 9202 `
+  --description cocopops_chord_as_cpitch `
+  --ticks-per-quarter 96 `
+  --id-column piece_id `
+  --cpitch-mode chord `
+  --cpitch-map-output D:/music/output/idyom_cocopops_harmony_conditioned/chord_as_cpitch_map.csv
+
+python D:/music/scripts/events_to_idyom_sqlite.py `
+  --events D:/music/data/events_cocopops_pop.csv `
+  --output D:/music/output/idyom_cocopops_harmony_conditioned/input/chord_pitch_pair_as_cpitch.sqlite `
+  --dataset-id 9203 `
+  --description cocopops_chord_pitch_pair_as_cpitch `
+  --ticks-per-quarter 96 `
+  --id-column piece_id `
+  --cpitch-mode chord_pitch_pair `
+  --cpitch-map-output D:/music/output/idyom_cocopops_harmony_conditioned/chord_pitch_pair_as_cpitch_map.csv
+```
+
+Run original IDyOM on each database with the same model settings, then combine
+the `.dat` files:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File D:/music/scripts/run_original_idyom.ps1 `
+  -Database D:/music/output/idyom_cocopops_harmony_conditioned/input/harmony_conditioned.sqlite `
+  -OutputDir D:/music/output/idyom_cocopops_harmony_conditioned/cpitch_only_order3/original_lisp_idyom `
+  -DatasetId 9201 -Models ltm+ -K 5 -OrderBound 3 -Detail 3 `
+  -TargetViewpoints "(cpitch)" -SourceViewpoints "(cpitch)" -DynamicSpaceSizeMb 4096
+
+powershell -ExecutionPolicy Bypass -File D:/music/scripts/run_original_idyom.ps1 `
+  -Database D:/music/output/idyom_cocopops_harmony_conditioned/input/chord_as_cpitch.sqlite `
+  -OutputDir D:/music/output/idyom_cocopops_harmony_conditioned/chord_as_cpitch_order3/original_lisp_idyom `
+  -DatasetId 9202 -Models ltm+ -K 5 -OrderBound 3 -Detail 3 `
+  -TargetViewpoints "(cpitch)" -SourceViewpoints "(cpitch)" -DynamicSpaceSizeMb 8192
+
+powershell -ExecutionPolicy Bypass -File D:/music/scripts/run_original_idyom.ps1 `
+  -Database D:/music/output/idyom_cocopops_harmony_conditioned/input/chord_pitch_pair_as_cpitch.sqlite `
+  -OutputDir D:/music/output/idyom_cocopops_harmony_conditioned/chord_pitch_pair_as_cpitch_order3/original_lisp_idyom `
+  -DatasetId 9203 -Models ltm+ -K 5 -OrderBound 3 -Detail 3 `
+  -TargetViewpoints "(cpitch)" -SourceViewpoints "(cpitch)" -DynamicSpaceSizeMb 8192
+
+python D:/music/scripts/summarize_original_idyom_harmony_conditioned.py `
+  --events D:/music/data/events_cocopops_pop.csv `
+  --cpitch-dat D:/music/output/idyom_cocopops_harmony_conditioned/cpitch_only_order3/original_lisp_idyom/<CPITCH_DAT>.dat `
+  --chord-dat D:/music/output/idyom_cocopops_harmony_conditioned/chord_as_cpitch_order3/original_lisp_idyom/<CHORD_DAT>.dat `
+  --joint-dat D:/music/output/idyom_cocopops_harmony_conditioned/chord_pitch_pair_as_cpitch_order3/original_lisp_idyom/<JOINT_DAT>.dat `
+  --output-dir D:/music/output/idyom_cocopops_harmony_conditioned/analysis
+```
+
+The joint `(chord, cpitch)` vocabulary is much larger than the pitch vocabulary.
+For full CoCoPops event-level output, use `Detail 3` only when enough time and
+memory are available. `Detail 2` is useful for quick piece-level diagnostics but
+does not contain note-level IC rows.
+
 Classical melody/cadence analysis, from raw DCML files to final reports:
 
 ```powershell
