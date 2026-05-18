@@ -218,6 +218,34 @@ This avoids asking the sampler to generate 40+ intervening notes before scoring
 the C2 incipit, where rollout paths drift too far from the observed lead-in.
 Raise `--rollouts` manually for a slower precision check.
 
+The pipeline also includes a stricter candidate-ranking control:
+
+```text
+true context at C2 - 16/8/4/2/1 notes
+-> score actual_C2, V2_opening, C1_opening, same_song_nonchorus_matched, shuffled_C2
+-> actual C2 rank and control-minus-actual margins
+-> output/pop_music_idyom_pipeline/c2_candidate_ranking/
+```
+
+This is the preferred note-level check: if actual C2 does not beat V2 and the
+same-song matched non-chorus control, the result should not be interpreted as
+chorus-specific note-level anticipation.
+
+The final pop analysis is harmony-conditioned cpitch IC:
+
+```text
+cpitch-only model: P(cpitch_t | previous cpitches)
+harmony-conditioned model: P(cpitch_t | previous cpitches, current chord, previous chords)
+-> note-level IC_cpitch_only, IC_harmony, harmony_gain
+-> section labels used only after scoring for grouping
+-> output/pop_music_idyom_pipeline/harmony_conditioned_cpitch/
+```
+
+This analysis must not be described as predicting verse/chorus/bridge labels.
+The model never sees those labels; they are used only to summarize where pitch
+events are more or less surprising, and how much harmonic context changes that
+surprisal.
+
 Classical melody/cadence analysis, from raw DCML files to final reports:
 
 ```powershell

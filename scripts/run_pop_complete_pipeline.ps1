@@ -87,3 +87,19 @@ $ltmPlainDat = Get-ChildItem "$Root/output/idyom_cocopops_melody/ltm_plain/origi
   --incipit-notes 4 `
   --rollouts 100 `
   --horizons 1,2,4,8
+
+& $Python "$Root/scripts/pop_c2_candidate_ranking.py" `
+  --events "$Root/data/events_cocopops_pop.csv" `
+  --output-dir "$Root/output/pop_music_idyom_pipeline/c2_candidate_ranking" `
+  --folds 5 `
+  --max-order 8 `
+  --alpha 0.1 `
+  --incipit-notes 4 `
+  --horizons 16,8,4,2,1
+
+& $Python "$Root/scripts/pop_harmony_conditioned_cpitch_ic.py" `
+  --events "$Root/data/events_cocopops_pop.csv" `
+  --output-dir "$Root/output/pop_music_idyom_pipeline/harmony_conditioned_cpitch" `
+  --folds 5 `
+  --max-order 8 `
+  --alpha 0.1
